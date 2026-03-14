@@ -1,4 +1,4 @@
-# etape 1 : construction de l'app
+# Stage 1: Build
 FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
@@ -6,15 +6,9 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# etape 2 : execution
-FROM node:18-alpine
-WORKDIR /app
-# on recupere le build et le serveur de prod
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/server.cjs ./
-COPY --from=build /app/package*.json ./
-RUN npm install --only=production
-
-EXPOSE 8080
-# on lance le petit serveur node pour servir le front
-CMD ["node", "server.cjs"]
+# Stage 2: Production (ngix)
+FROM nginx:stable-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+# Script magique pour choisir entre DEV (Vite) et PROD (Nginx)
+ENV APP_ENV=prod
+CMD ["sh", "-c", "if [ \"$APP_ENV\" = 'dev' ]; then npm install && npx vite --host 0.0.0.0; else nginx -g 'daemon off;'; fi"]
