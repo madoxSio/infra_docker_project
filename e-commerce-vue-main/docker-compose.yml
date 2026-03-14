@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Bases de données
   auth-db:
     image: mongo:latest
     container_name: auth-db
@@ -17,35 +16,35 @@ services:
     container_name: order-db
     networks: [ecom-network]
 
-  # Services Backend
   auth-service:
     build: ./services/auth-service
     container_name: auth-service
+    env_file: ./services/auth-service/.env.production
     environment:
-      - PORT=3001
       - MONGODB_URI=mongodb://auth-db:27017/auth
-      - NODE_ENV=production
+    depends_on: [auth-db]
     networks: [ecom-network]
 
   product-service:
     build: ./services/product-service
     container_name: product-service
+    env_file: ./services/product-service/.env.production
     environment:
-      - PORT=3000
       - MONGODB_URI=mongodb://product-db:27017/products
+    depends_on: [product-db]
     networks: [ecom-network]
 
   order-service:
     build: ./services/order-service
     container_name: order-service
+    env_file: ./services/order-service/.env.production
     environment:
-      - PORT=3002
       - MONGODB_URI=mongodb://order-db:27017/orders
       - AUTH_SERVICE_URL=http://auth-service:3001
       - PRODUCT_SERVICE_URL=http://product-service:3000
+    depends_on: [order-db, auth-service, product-service]
     networks: [ecom-network]
 
-  # Frontend
   frontend:
     build: ./frontend
     container_name: frontend

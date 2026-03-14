@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  auth-service:
+    volumes:
+      - ./services/auth-service:/app
+      - /app/node_modules
+    command: npm run dev
+    env_file: ./services/auth-service/.env
+
+  product-service:
+    volumes:
+      - ./services/product-service:/app
+      - /app/node_modules
+    command: npm run dev
+    env_file: ./services/product-service/.env
+
+  order-service:
+    volumes:
+      - ./services/order-service:/app
+      - /app/node_modules
+    command: npm run dev
+    env_file: ./services/order-service/.env
+
+  frontend:
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+    ports:
+      - "5173:5173" # Port par defaut de vite qd on est en dev
