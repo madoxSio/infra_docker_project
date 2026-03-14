@@ -46,10 +46,12 @@ services:
     networks: [ecom-network]
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "8080:8080"
+      - "80:80"
     networks: [ecom-network]
 
 networks:

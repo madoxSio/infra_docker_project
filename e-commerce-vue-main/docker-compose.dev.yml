@@ -1,33 +1,32 @@
 version: '3.8'
-
 services:
   auth-service:
+    environment:
+      - NODE_ENV=dev
     volumes:
       - ./services/auth-service:/app
       - /app/node_modules
-    command: npm run dev
-    env_file: ./services/auth-service/.env
 
   product-service:
+    environment:
+      - NODE_ENV=dev
     volumes:
       - ./services/product-service:/app
       - /app/node_modules
-    command: npm run dev
-    env_file: ./services/product-service/.env
 
   order-service:
+    environment:
+      - NODE_ENV=dev
     volumes:
       - ./services/order-service:/app
       - /app/node_modules
-    command: npm run dev
-    env_file: ./services/order-service/.env
 
   frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: sh -c "npm install && npx vite --host 0.0.0.0"
-    stdin_open: true
-    tty: true
     ports:
       - "5173:5173"
