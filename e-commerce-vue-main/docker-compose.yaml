@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # base de donnees pour l'auth
+  auth-db:
+    image: mongo:latest
+    container_name: auth-db
+    ports:
+      - "27018:27017" # on decale le port externe pour eviter les conflits
+
+  # service d'authentification
+  auth-service:
+    build: ./services/auth-service
+    container_name: auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGODB_URI=mongodb://auth-db:27017/auth
+      - JWT_SECRET=efrei_super_pass
+      - NODE_ENV=production
+    depends_on:
+      - auth-db
