@@ -1,23 +1,58 @@
 version: '3.8'
 
 services:
-  # base de donnees pour l'auth
+  # Bases de données
   auth-db:
     image: mongo:latest
     container_name: auth-db
-    ports:
-      - "27018:27017" # on decale le port externe pour eviter les conflits
+    networks: [ecom-network]
 
-  # service d'authentification
+  product-db:
+    image: mongo:latest
+    container_name: product-db
+    networks: [ecom-network]
+
+  order-db:
+    image: mongo:latest
+    container_name: order-db
+    networks: [ecom-network]
+
+  # Services Backend
   auth-service:
     build: ./services/auth-service
     container_name: auth-service
-    ports:
-      - "3001:3001"
     environment:
       - PORT=3001
       - MONGODB_URI=mongodb://auth-db:27017/auth
-      - JWT_SECRET=efrei_super_pass
       - NODE_ENV=production
-    depends_on:
-      - auth-db
+    networks: [ecom-network]
+
+  product-service:
+    build: ./services/product-service
+    container_name: product-service
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://product-db:27017/products
+    networks: [ecom-network]
+
+  order-service:
+    build: ./services/order-service
+    container_name: order-service
+    environment:
+      - PORT=3002
+      - MONGODB_URI=mongodb://order-db:27017/orders
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - PRODUCT_SERVICE_URL=http://product-service:3000
+    networks: [ecom-network]
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8080:8080"
+    networks: [ecom-network]
+
+networks:
+  ecom-network:
+    driver: bridge

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  auth-service:
+    volumes:
+      - ./services/auth-service:/app  # synchronise le code local
+    command: npm run dev              # lance nodemon
+    environment:
+      - NODE_ENV=development
+
+  product-service:
+    volumes:
+      - ./services/product-service:/app
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+
+  order-service:
+    volumes:
+      - ./services/order-service:/app
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    volumes:
+      - ./frontend:/app
+    command: npm run dev

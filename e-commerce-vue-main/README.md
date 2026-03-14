@@ -1,5 +1,7 @@
 # Documentation du Projet E-Commerce Microservices
+En Prod (Debian 12) : Tu lances docker-compose up --build -d. Docker construit des images figées. C'est rapide, sécurisé et ça ne change pas.
 
+En Dev : Tu lances docker-compose -f docker-compose.yml -f docker-compose.dev.yml up. Grâce aux Volumes, si tu modifies un fichier dans VS Code, le conteneur le voit tout de suite et nodemon redémarre le service.
 ## Table des Matières
 
 1. [Introduction](#introduction)
