@@ -4,10 +4,12 @@
 Utilise le **Multi-stage build** pour générer des images légères et sécurisées.
 ```bash
 # Construction et lancement en arrière-plan
-docker compose up --build -d
+# Pour passer en PROD
+docker compose down && docker compose up --build
 
 # Lancement avec surcharge de configuration dev
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+# Pour passer en DEV
+docker compose down && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 ## 🧪 Tests et Validation
 
@@ -77,3 +79,6 @@ Voici les commandes que tu utiliseras le plus souvent durant ton projet.
 | Redémarrer un service | `docker compose restart <nom_du_service>` |
 | Entrer dans un conteneur | `docker compose exec <nom_du_service> sh` |
 | Supprimer les volumes | `docker compose down -v` ⚠️ efface les bases de données |
+
+# nettoyage complet 
+docker system prune -f
