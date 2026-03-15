@@ -10,6 +10,9 @@ export default defineConfig({
     port: 5173,
     host: '0.0.0.0',
     cors: true,
+    watch: {
+      usePolling: true, // règle le problème de synchro pour le hot-reload sur windob
+    },
     proxy: {
       '/api/products': {
         target: process.env.VITE_PRODUCT_SERVICE_URL || 'http://product-service:3000',
