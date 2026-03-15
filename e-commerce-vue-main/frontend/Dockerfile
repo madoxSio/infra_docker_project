@@ -3,12 +3,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN addgroup -S appgroup \
- && adduser -S appuser -G appgroup
-USER appuser
 RUN npm run build
 
 FROM nginx:stable-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
+RUN addgroup -S appgroup \
+ && adduser -S appuser -G appgroup \
+ && chown -R appuser:appgroup /usr/share/nginx/html
+USER appuser
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
