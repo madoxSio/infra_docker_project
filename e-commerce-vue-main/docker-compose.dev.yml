@@ -1,25 +1,39 @@
-version: '3.8'
 services:
   auth-service:
-    environment:
-      - NODE_ENV=dev
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile.dev
     volumes:
       - ./services/auth-service:/app
       - /app/node_modules
+    stdin_open: true
+    tty: true
+    networks:
+      - ecom-network
 
   product-service:
-    environment:
-      - NODE_ENV=dev
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile.dev
     volumes:
       - ./services/product-service:/app
       - /app/node_modules
+    stdin_open: true
+    tty: true
+    networks:
+      - ecom-network
 
   order-service:
-    environment:
-      - NODE_ENV=dev
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile.dev
     volumes:
       - ./services/order-service:/app
       - /app/node_modules
+    stdin_open: true
+    tty: true
+    networks:
+      - ecom-network
 
   frontend:
     build: 
@@ -30,3 +44,9 @@ services:
       - /app/node_modules
     ports:
       - "5173:5173"
+    networks:
+      - ecom-network
+
+networks:
+  ecom-network:
+    external: false

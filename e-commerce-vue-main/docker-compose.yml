@@ -1,49 +1,64 @@
-version: '3.8'
-
 services:
   auth-db:
     image: mongo:latest
     container_name: auth-db
-    networks: [ecom-network]
+    networks:
+      - ecom-network
 
   product-db:
     image: mongo:latest
     container_name: product-db
-    networks: [ecom-network]
+    networks:
+      - ecom-network
 
   order-db:
     image: mongo:latest
     container_name: order-db
-    networks: [ecom-network]
+    networks:
+      - ecom-network        
 
   auth-service:
-    build: ./services/auth-service
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
     container_name: auth-service
     env_file: ./services/auth-service/.env.production
     environment:
       - MONGODB_URI=mongodb://auth-db:27017/auth
-    depends_on: [auth-db]
-    networks: [ecom-network]
+    depends_on:
+      - auth-db
+    networks:
+      - ecom-network
 
   product-service:
-    build: ./services/product-service
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
     container_name: product-service
     env_file: ./services/product-service/.env.production
     environment:
       - MONGODB_URI=mongodb://product-db:27017/products
-    depends_on: [product-db]
-    networks: [ecom-network]
+    depends_on:
+      - product-db
+    networks:
+      - ecom-network
 
   order-service:
-    build: ./services/order-service
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
     container_name: order-service
     env_file: ./services/order-service/.env.production
     environment:
       - MONGODB_URI=mongodb://order-db:27017/orders
-      - AUTH_SERVICE_URL=http://auth-service:3001
+      - AUTH_SERVICE_URL=http://auth-service:3000
       - PRODUCT_SERVICE_URL=http://product-service:3000
-    depends_on: [order-db, auth-service, product-service]
-    networks: [ecom-network]
+    depends_on:
+      - order-db
+      - auth-service
+      - product-service
+    networks:
+      - ecom-network
 
   frontend:
     build: 
@@ -51,8 +66,9 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "8080:8080"
-    networks: [ecom-network]
+      - "8080:80"
+    networks:
+      - ecom-network
 
 networks:
   ecom-network:
