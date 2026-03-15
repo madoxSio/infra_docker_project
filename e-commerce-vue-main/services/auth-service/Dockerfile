@@ -2,14 +2,22 @@
 FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 COPY . .
 
-# Stage 2: Production
+# Stage 2: Production (Image finale)
 FROM node:18-alpine
 WORKDIR /app
-# On copie TOUT ce qui a été buildé dans l'étape 1
-COPY --from=build /app .
-ENV NODE_ENV=prod
-# On lance app.js (ou index.js) peu importe où il est
-CMD ["sh", "-c", "if [ \"$NODE_ENV\" = 'dev' ]; then npm run dev; else node src/app.js; fi"]
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/src ./src
+COPY --from=build /app/app.js ./app.js
+
+RUN chown -R appuser:appgroup /app
+USER appuser
+
+ENV NODE_ENV=production
+EXPOSE 3000
+CMD ["node", "src/app.js"]

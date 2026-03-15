@@ -3,6 +3,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN addgroup -S appgroup \
+ && adduser -S appuser -G appgroup
+USER appuser
 RUN npm run build
 
 FROM nginx:stable-alpine

@@ -1,0 +1,8 @@
+FROM node:18-alpine
+WORKDIR /app
+RUN npm install -g nodemon
+COPY package*.json ./
+RUN npm install
+COPY . .
+ENV NODE_ENV=development
+CMD ["nodemon", "src/app.js"]
