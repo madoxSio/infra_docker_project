@@ -6,8 +6,6 @@ services:
     volumes:
       - ./services/auth-service:/app
       - /app/node_modules
-    stdin_open: true
-    tty: true
     networks:
       - ecom-network
 
@@ -18,8 +16,6 @@ services:
     volumes:
       - ./services/product-service:/app
       - /app/node_modules
-    stdin_open: true
-    tty: true
     networks:
       - ecom-network
 
@@ -30,8 +26,6 @@ services:
     volumes:
       - ./services/order-service:/app
       - /app/node_modules
-    stdin_open: true
-    tty: true
     networks:
       - ecom-network
 
