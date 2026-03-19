@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   auth-db:
     image: mongo:latest
@@ -38,37 +36,35 @@ services:
       - ecom-network
 
   auth-service:
-    build:
-      context: ./services/auth-service
-      dockerfile: Dockerfile
+    build: ./services/auth-service
     container_name: auth-service
     restart: always
     env_file: .env
     environment:
       - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@auth-db:27017/auth?authSource=admin
+    ports:
+      - "3001:3000"
     depends_on:
       - auth-db
     networks:
       - ecom-network
 
   product-service:
-    build:
-      context: ./services/product-service
-      dockerfile: Dockerfile
+    build: ./services/product-service
     container_name: product-service
     restart: always
     env_file: .env
     environment:
       - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@product-db:27017/products?authSource=admin
+    ports:
+      - "3000:3000"
     depends_on:
       - product-db
     networks:
       - ecom-network
 
   order-service:
-    build:
-      context: ./services/order-service
-      dockerfile: Dockerfile
+    build: ./services/order-service
     container_name: order-service
     restart: always
     env_file: .env
@@ -76,6 +72,8 @@ services:
       - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@order-db:27017/orders?authSource=admin
       - AUTH_SERVICE_URL=http://auth-service:3000
       - PRODUCT_SERVICE_URL=http://product-service:3000
+    ports:
+      - "3002:3000"
     depends_on:
       - order-db
       - auth-service
@@ -84,9 +82,7 @@ services:
       - ecom-network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     container_name: frontend
     restart: always
     ports:
@@ -101,4 +97,5 @@ volumes:
 
 networks:
   ecom-network:
+    name: ecom-network
     driver: bridge

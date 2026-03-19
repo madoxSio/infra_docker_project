@@ -2,3 +2,5 @@ node_modules/
 coverage/
 package-lock.json
 gl-code-quality-report.json
+.env
+.env.production
