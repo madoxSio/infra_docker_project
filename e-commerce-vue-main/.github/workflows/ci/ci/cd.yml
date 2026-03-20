@@ -27,7 +27,7 @@ jobs:
           npm install
           npm run test:unit
 
-      # Tests Backend (exemple Auth, à dupliquer pour les autres)
+      # Tests Backend (exemple Auth, à dupliquer pour les autre)
       - name: Auth Service Unit Tests
         run: |
           cd services/auth-service
@@ -54,7 +54,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/madox/TON_NOM_DE_PROJET
+            cd /home/madox/infra_docker_project
             git fetch --all
             git checkout ${{ github.ref_name }}
             # On recrée les conteneurs avec les nouvelles images
