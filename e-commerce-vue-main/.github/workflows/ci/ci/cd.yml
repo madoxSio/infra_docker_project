@@ -1,0 +1,61 @@
+name: CI/CD Microservices
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*' # Se déclenche sur les tags comme v1.0, v2.1...
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # --- PARTIE CI : TESTS ET QUALITÉ ---
+  tests-and-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Tests Frontend
+      - name: Frontend Unit Tests
+        run: |
+          cd frontend
+          npm install
+          npm run test:unit
+
+      # Tests Backend (exemple Auth, à dupliquer pour les autres)
+      - name: Auth Service Unit Tests
+        run: |
+          cd services/auth-service
+          npm install
+          npm test
+
+      # Scan de sécurité avec Trivy
+      - name: Security Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          severity: 'CRITICAL,HIGH'
+
+  # --- PARTIE CD : DÉPLOIEMENT (UNIQUEMENT SUR TAG) ---
+  deploy-production:
+    needs: tests-and-security
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/madox/TON_NOM_DE_PROJET
+            git fetch --all
+            git checkout ${{ github.ref_name }}
+            # On recrée les conteneurs avec les nouvelles images
+            docker compose up -d --build
