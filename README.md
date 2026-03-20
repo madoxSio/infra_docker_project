@@ -775,3 +775,129 @@ curl -X POST http://localhost:3002/api/orders \
 3. **Surveillance des Pipelines** :
 
    - Utilisez l'interface GitLab pour surveiller l'exécution des pipelines, vérifier les rapports de sécurité et consulter les résultats des tests.
+
+# 🐳 Docker Projet - Backend + Frontend
+
+## 🎯 Objectif
+Cette partie explique l'installation, les commandes clés, les tests, et les bonnes pratiques pour le développement et le déploiement.
+
+---
+
+## 📦 Prérequis
+
+- Docker 24.x+
+- Docker Compose v2 (`docker compose`)
+- Node.js 18+ (si vous exécutez localement hors conteneurs)
+- Debian 12 recommandé sur serveur
+
+---
+
+## 🚀 Démarrage rapide
+
+### Production
+```bash
+docker compose down
+docker compose up --build -d
+```
+
+### Développement
+```bash
+docker compose down
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+### Arrêter tout
+```bash
+docker compose down
+```
+
+---
+
+## 🧪 Tests
+
+Lancer les tests dans chaque conteneur pour garantir l'intégrité du service :
+
+- Auth service: `docker compose exec auth-service npm test`
+- Product service: `docker compose exec product-service npm test`
+- Order service: `docker compose exec order-service npm test`
+- Frontend: `docker compose exec frontend npm run test:unit`
+
+Exemple bash :
+```bash
+docker compose exec product-service npm test
+docker compose exec order-service npm test
+docker compose exec frontend npm run test:unit
+docker compose exec auth-service npm test
+```
+
+---
+
+## 🌱 Initialiser les données
+
+Après démarrage des services, importer les produits par défaut :
+
+```bash
+chmod +x scripts/init-products.sh
+./scripts/init-products.sh
+```
+
+---
+
+## 🔧 Commandes utiles
+
+| Action | Commande |
+|---|---|
+| Démarrer en prod | `docker compose up --build -d` |
+| Démarrer en dev | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up` |
+| Arrêter | `docker compose down` |
+| Logs | `docker compose logs -f` |
+| Statut | `docker compose ps` |
+| Redémarrer service | `docker compose restart <service>` |
+| Shell dans conteneur | `docker compose exec <service> sh` |
+| Supprimer volumes | `docker compose down -v` (⚠️ données supprimées) |
+| Nettoyage général | `docker system prune -f` |
+
+---
+
+## 🛠️ Architecture Docker & sécurité
+
+### Multi-stage builds
+- Images plus légères
+- Séparation build/runtime
+- Node `alpine` pour production
+
+### Réseau et isolation
+- Conteneurs via un réseau bridge privé
+- Communication inter-service via noms de service
+
+### Variable d'environnement
+- Fichiers `env_file` (ex: `.env`) et override Compose
+- `docker-compose.dev.yml` pour la configuration dev
+
+### Non-Root (Security best practice)
+- Nginx configuré sur port `8080` (pas 80) pour éviter besoin root
+- Utilisateur `appuser` géré dans Dockerfile
+- `/var/run/nginx.pid` pré-créé et permissions adjustées
+
+### Vue / hot reload (WSL + Docker)
+- `vite.config.js` : `server: { watch: { usePolling: true } }`
+- Corrige la détection des changements de fichiers dans Windows + WSL
+
+### Routage frontend (Vue Router history mode)
+Nginx gère la SPA avec `try_files $uri /index.html` pour éviter 404 en refresh client-side.
+
+---
+
+## 🐧 Déploiement cible
+
+- Debian 12 + Docker + Docker Compose
+- Pour production, mettre en place volume persistant pour Mongo d’un service à l’autre (si utilisé)
+
+---
+
+## 💡 Notes d’exploitation
+
+- Un `docker compose ps` + `docker compose logs -f <service>` est la méthode de debug standard.
+
+
+
