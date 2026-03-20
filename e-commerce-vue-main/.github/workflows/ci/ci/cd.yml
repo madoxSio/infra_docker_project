@@ -27,10 +27,22 @@ jobs:
           npm install
           npm run test:unit
 
-      # Tests Backend (exemple Auth, à dupliquer pour les autre)
+      # Tests Backend 
       - name: Auth Service Unit Tests
         run: |
           cd services/auth-service
+          npm install
+          npm test
+
+      - name: product Service Unit Tests
+        run: |
+          cd services/product-service
+          npm install
+          npm test
+
+      - name: order Service Unit Tests
+        run: |
+          cd services/order-service
           npm install
           npm test
 
