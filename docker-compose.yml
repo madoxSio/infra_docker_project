@@ -65,7 +65,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@order-db:27017/orders_db?authSource=admin
+      - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@order-db:27017/order_db?authSource=admin
       - AUTH_SERVICE_URL=http://auth-service:3000
       - PRODUCT_SERVICE_URL=http://product-service:3000
     depends_on:
