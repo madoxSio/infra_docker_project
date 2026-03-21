@@ -46,6 +46,10 @@ services:
       - auth-db
     networks:
       - ecom-network
+    deploy:
+      resources:
+        limits:
+          memory: 120M  
 
   product-service:
     build: ./services/product-service
@@ -58,6 +62,10 @@ services:
       - product-db
     networks:
       - ecom-network
+    deploy:
+      resources:
+        limits:
+          memory: 120M  
 
   order-service:
     build: ./services/order-service
@@ -74,6 +82,10 @@ services:
       - product-service
     networks:
       - ecom-network
+    deploy:
+      resources:
+        limits:
+          memory: 120M  
 
   frontend:
     build: ./frontend
