@@ -9,14 +9,7 @@ sleep 10
 API_URL=${1:-"http://localhost:3000"}
 
 create_product() {
-    # On teste si on est en direct (port 3000) ou via Nginx (port 80)
-    if [[ "$API_URL" == *"3000"* ]]; then
-        # Route DIRECTE (Dev)
-        TARGET_URL="${API_URL}/api/products"
-    else
-        # Route via NGINX (Prod)
-        TARGET_URL="${API_URL}/api/products/"
-    fi
+    TARGET_URL="${API_URL}/api/products"
 
     curl -s -X POST "$TARGET_URL" \
         -H "Content-Type: application/json" \
