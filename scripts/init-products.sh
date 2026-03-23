@@ -4,31 +4,31 @@
 echo "Attente du service product..."
 sleep 10
 
-# URL du service
-API_URL="http://localhost:3000/api"
+# En DEV : utilise localhost:3000
+# En PROD : utilise http://178.62.80.196
+API_URL=${1:-"http://localhost:3000"}
 
-# Token d'authentification (à adapter selon votre configuration)
-TOKEN="efrei_super_pass"
-
-# Fonction pour créer un produit
 create_product() {
-    local name=$1
-    local price=$2
-    local description=$3
-    local stock=$4
+    # On teste si on est en direct (port 3000) ou via Nginx (port 80)
+    if [[ "$API_URL" == *"3000"* ]]; then
+        # Route DIRECTE (Dev)
+        TARGET_URL="${API_URL}/api/products"
+    else
+        # Route via NGINX (Prod)
+        TARGET_URL="${API_URL}/api/product/api/products"
+    fi
 
-    curl -X POST "${API_URL}/products" \
+    curl -s -X POST "$TARGET_URL" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${TOKEN}" \
+        -H "Authorization: Bearer efrei_super_pass" \
         -d "{
-            \"name\": \"${name}\",
-            \"price\": ${price},
-            \"description\": \"${description}\",
-            \"stock\": ${stock}
+            \"name\": \"$1\",
+            \"price\": $2,
+            \"description\": \"$3\",
+            \"stock\": $4
         }"
-    echo
+    echo " -> Tentative sur $TARGET_URL pour $1"
 }
-
 echo "Création des produits..."
 
 # Création de plusieurs produits
