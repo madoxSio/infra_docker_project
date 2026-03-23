@@ -15,7 +15,7 @@ create_product() {
         TARGET_URL="${API_URL}/api/products"
     else
         # Route via NGINX (Prod)
-        TARGET_URL="${API_URL}/api/products"
+        TARGET_URL="${API_URL}/api/product/api/products"
     fi
 
     curl -s -X POST "$TARGET_URL" \
