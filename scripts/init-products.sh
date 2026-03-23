@@ -17,7 +17,7 @@ create_product() {
     local description=$3
     local stock=$4
 
-    curl -X POST "${API_URL}/api/product/api/products" \
+   curl -X POST "${API_URL}/api/product/products" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${TOKEN}" \
         -d "{
