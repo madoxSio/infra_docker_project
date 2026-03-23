@@ -5,7 +5,7 @@ echo "Attente du service product..."
 sleep 10
 
 # URL du service
-API_URL="http://product-service:3000"
+API_URL=${1:-"http://localhost:3000"}
 
 # Token d'authentification (à adapter selon votre configuration)
 TOKEN="efrei_super_pass"
@@ -17,7 +17,7 @@ create_product() {
     local description=$3
     local stock=$4
 
-    curl -X POST "${API_URL}/products" \
+    curl -X POST "${API_URL}/api/product/products" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${TOKEN}" \
         -d "{
