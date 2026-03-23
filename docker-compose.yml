@@ -60,6 +60,8 @@ services:
       - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@product-db:27017/products_db?authSource=admin
     depends_on:
       - product-db
+    ports:
+      - "3000:3000"    
     networks:
       - ecom-network
     deploy:
