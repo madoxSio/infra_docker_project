@@ -20,6 +20,11 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install MongoDB dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4 libsasl2-7 libsnappy1v5 libssl-dev    
+
       # Tests Frontend
       - name: Frontend Unit Tests
         run: |
@@ -28,11 +33,11 @@ jobs:
           npm run test:unit
 
       # Tests Backend 
-      # - name: Auth Service Unit Tests
-      #   run: |
-      #     cd services/auth-service
-      #     npm install
-      #     npm test
+      - name: Auth Service Unit Tests
+        run: |
+          cd services/auth-service
+          npm install
+          npm test
 
       - name: product Service Unit Tests
         run: |
