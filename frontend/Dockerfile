@@ -18,5 +18,5 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup && \
 RUN touch /var/run/nginx.pid && chown appuser:appgroup /var/run/nginx.pid
 
 USER appuser
-EXPOSE 8080
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
