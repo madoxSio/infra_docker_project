@@ -839,6 +839,9 @@ Après démarrage des services, importer les produits par défaut :
 ```bash
 chmod +x scripts/init-products.sh
 ./scripts/init-products.sh
+
+en Prod :
+./scripts/init-products.sh http://ip_serveur:3000
 ```
 
 ---
