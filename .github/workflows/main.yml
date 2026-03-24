@@ -11,7 +11,7 @@ on:
 jobs:
   # --- PARTIE CI : TESTS ET QUALITÉ ---
   tests-and-security:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -23,7 +23,7 @@ jobs:
       - name: Install MongoDB dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4 libsasl2-7 libsnappy1v5 libssl-dev
+          sudo apt-get install -y libcurl4 libsasl2-2 libsnappy1v5 libssl-dev 
 
       # Tests Frontend
       - name: Frontend Unit Tests
